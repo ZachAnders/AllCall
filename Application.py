@@ -24,12 +24,7 @@ def login():
 @app.route("/allcall")
 def allcall():
 	sess = DbSession()
-	#aps = sess.get_APs()
-#	aps = AccessPoint.get_all_equipment(sess.get_session())
-#	for ap in aps:
 	aps = sess.get_session().query(AccessPoint).all()
-#		#Populate network location and address
-#		ap.populate(sess.get_session())
 	return render_template("allcall.html", access_points=aps, logged_in=True)
 
 @app.route("/logout")
