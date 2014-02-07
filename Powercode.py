@@ -1,5 +1,4 @@
 import sqlalchemy
-from PowercodeSchema import AccessPoint, Equipment, EquipmentEx
 
 class DbSession():
 	def __init__(self):
@@ -9,12 +8,8 @@ class DbSession():
 	def get_session(self):
 		return self.current_session
 
-#
-class AccessPoint():
-	def __init__(self):
-		pass
 
 if __name__ == "__main__":
 	print "Testing"
-	import sqlalchemy
+	tester = DbSession()
 

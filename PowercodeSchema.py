@@ -1,31 +1,13 @@
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
-
-def unravel_ip(ip):
-	ip = recurse_ip(ip)
-	return ".".join([str(octet) for octet in ip])
-	
-def recurse_ip(ip):
-	if ip <= 0:
-		return []
-	return recurse_ip(ip>>8) + [ip&0xFF,]
 
 class AccessPoint(Base):
 	__tablename__ = "AccessPoint"
 
-	EquipmentID = Column(Integer, primary_key=True)
-
-	@staticmethod
-	def get_all_equipment(session):
-		ap_equipment = []
-		for ap in session.query(AccessPoint):
-			current_id = ap.EquipmentID
-			current_equipment = session.query(Equipment).filter(Equipment.ID == current_id).all()
-			if len(current_equipment) != 1:
-				print("Retrieved more than one piece of equipment for id " + str(current_id) + ", this is unexpected behaviour!")
-			ap_equipment += current_equipment	
-		return ap_equipment
+	EquipmentID = Column(Integer, ForeignKey("Equipment.ID"), primary_key=True)
+	equipment = relationship("Equipment", foreign_keys='AccessPoint.EquipmentID')
 
 class Equipment(Base):
 	__tablename__ = "Equipment"
@@ -35,44 +17,26 @@ class Equipment(Base):
 	MACAddress = Column(String)
 	IPAddress = Column(Integer)
 	DeviceType = Column(String)
-	equipment_address = None
-	network_location = None
+	equipment_ex = relationship("EquipmentEx", uselist=False, backref="Equipment")
+
 	def decodedIPAddress(self):
-		return unravel_ip(self.IPAddress)
-	def populate(self, session):
-		eq_ex = EquipmentEx.get_equipment_ex(session, self.ID)
-		self.network_location = NetworkLocation.get_network_location(session, eq_ex.NetworkLocationID)
-		self.equipment_address = Address.get_address(session, self.network_location.AddressID)
+		return ".".join([str((self.IPAddress >> ((3-i)*8))&0xFF) for i in range(4)])
 
 class EquipmentEx(Base):
 	__tablename__ = "EquipmentEx"
 
-	EquipmentID = Column(Integer, primary_key=True)
-	NetworkLocationID = Column(Integer)
-	
-	@staticmethod
-	def get_equipment_ex(session, eq_id):
-		eq_exs = session.query(EquipmentEx).filter(EquipmentEx.EquipmentID == eq_id).all()
-		if len(eq_exs) != 1:
-			print("Retrieved more than one EquipEx for id " + str(eq_id) + ", this is unexpected behaviour!")
-		return eq_exs[0]
-
+	EquipmentID = Column(Integer, ForeignKey('Equipment.ID'), primary_key=True)
+	NetworkLocationID = Column(Integer, ForeignKey('NetworkLocation.NetworkLocationID'))
+	network_location = relationship("NetworkLocation", foreign_keys='EquipmentEx.NetworkLocationID')
 
 class NetworkLocation(Base):
 	__tablename__ = "NetworkLocation"
 	NetworkLocationID = Column(Integer, primary_key=True)
-	AddressID = Column(String)
+	AddressID = Column(Integer, ForeignKey("Address.AddressID"))
 	Name = Column(String)
 	Notes = Column(String)
 	TypeOfSite = Column(String)
-
-	@staticmethod
-	def get_network_location(session, network_location_id):
-		net_locs = session.query(NetworkLocation).filter(NetworkLocation.NetworkLocationID == network_location_id).all()
-		if len(net_locs) != 1:
-			print("Retrieved more than one EquipEx for id " + str(network_location_id) + ", this is unexpected behaviour!")
-		return net_locs[0]
-
+	address = relationship("Address", foreign_keys='NetworkLocation.AddressID')
 
 class Address(Base):
 	__tablename__ = "Address"
@@ -84,11 +48,3 @@ class Address(Base):
 	Zipcode = Column(String)
 	Latitude = Column(Float)
 	Longitude = Column(Float)
-
-	@staticmethod
-	def get_address(session, addr_id):
-		addrs = session.query(Address).filter(Address.AddressID == addr_id).all()
-		if len(addrs) != 1:
-			print("Retrieved more than one address for id " + str(addr_id) + ", this is unexpected behaviour!")
-		return addrs[0]
-

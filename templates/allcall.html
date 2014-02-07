@@ -17,12 +17,12 @@
 				{% for ap in access_points %}
 					<tr>
 						<td><button type="button" class="btn btn-danger">Select</button></td>
-						<!--<td>{{ ap.ID }} </td>-->
-						<td>{{ ap.Name }}</td>
-						<td>{{ ap.MACAddress }}</td>
-						<td>{{ ap.decodedIPAddress() }}</td>
-						<td>{{ ap.DeviceType }}</td>
-						<td>{{ ap.network_location.Name }}</td>
+						<!--<td>{{ ap.equipment.ID }} </td>-->
+						<td>{{ ap.equipment.Name }}</td>
+						<td>{{ ap.equipment.MACAddress }}</td>
+						<td>{{ ap.equipment.decodedIPAddress() }}</td>
+						<td>{{ ap.equipment.DeviceType }}</td>
+						<td>{{ ap.equipment.equipment_ex.network_location.Name }}</td>
 					</tr>
 				{% endfor %}
 

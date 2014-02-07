@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, url_for, flash
-from auth import has_valid_credentials, requires_session
-from powercode import DbSession
-from schema import AccessPoint
+from AppAuth import has_valid_credentials, requires_session
+from Powercode import DbSession
+from PowercodeSchema import AccessPoint
 app = Flask(__name__)
 
 @app.route("/")
@@ -25,10 +25,11 @@ def login():
 def allcall():
 	sess = DbSession()
 	#aps = sess.get_APs()
-	aps = AccessPoint.get_all_equipment(sess.get_session())
-	for ap in aps:
-		#Populate network location and address
-		ap.populate(sess.get_session())
+#	aps = AccessPoint.get_all_equipment(sess.get_session())
+#	for ap in aps:
+	aps = sess.get_session().query(AccessPoint).all()
+#		#Populate network location and address
+#		ap.populate(sess.get_session())
 	return render_template("allcall.html", access_points=aps, logged_in=True)
 
 @app.route("/logout")
