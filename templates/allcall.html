@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %} All Call {% endblock %}
+{% block body %}
+	<div class="panel panel-default">
+		{% if access_points %}
+		
+			<table class="table table-hover">
+				<tr>
+					<td>Selection</td>
+					<!--<td>Access Point ID</td> -->
+					<td>Name</td>
+					<td>MAC Address</td>
+					<td>IP Address</td>
+					<td>Device Type</td>
+					<td>Test</td>
+				</tr>
+				{% for ap in access_points %}
+					<tr>
+						<td><button type="button" class="btn btn-danger">Select</button></td>
+						<!--<td>{{ ap.ID }} </td>-->
+						<td>{{ ap.Name }}</td>
+						<td>{{ ap.MACAddress }}</td>
+						<td>{{ ap.decodedIPAddress() }}</td>
+						<td>{{ ap.DeviceType }}</td>
+						<td>{{ ap.network_location.Name }}</td>
+					</tr>
+				{% endfor %}
+
+			</table>
+		{% else %}
+			Did not find any access points!
+		{% endif %}
+	</div>
+{% endblock %}
