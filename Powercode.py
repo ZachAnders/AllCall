@@ -1,4 +1,5 @@
 import sqlalchemy
+import sqlalchemy.orm
 
 class DbSession():
 	def __init__(self):
