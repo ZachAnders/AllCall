@@ -52,9 +52,8 @@ def logout():
 	flash("You have been logged out.")
 	return redirect(url_for("login"))
 
-app.secret_key = os.urandom(128)
-
 if __name__ == "__main__":
+	app.secret_key = os.urandom(128)
 	app.debug = True
 	app.run()
 
