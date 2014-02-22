@@ -1,4 +1,5 @@
 from flask import session, render_template
+from functools import wraps
 
 def is_valid_user(some_user, timestamp):
 	"""Given a user, is this a valid user?"""
@@ -6,6 +7,7 @@ def is_valid_user(some_user, timestamp):
 		return True
 
 def requires_session(some_route):
+	@wraps(some_route)
 	def protected(*args, **kwargs):
 		if valid_session():
 			return some_route(*args, **kwargs)
