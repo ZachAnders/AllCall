@@ -1,3 +1,4 @@
+import json, os
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 from AppAuth import has_valid_credentials, requires_session
 from Powercode import DbSession
@@ -20,8 +21,8 @@ def login():
 	else:
 		return render_template("login.html")
 
-@requires_session
 @app.route("/allcall")
+@requires_session
 def allcall():
 	sess = DbSession()
 	aps = sess.get_session().query(AccessPoint).all()
@@ -37,6 +38,13 @@ def allcall():
 	default_order = [(default_order[i], i%2) for i in range(len(default_order))]
 	return render_template("allcall.html", sites=sites, site_order=default_order, logged_in=True)
 
+@app.route("/select_aps", methods=['POST'])
+@requires_session
+def select_aps():
+	aps = json.loads(request.form['selected_aps'])
+	aps = [int(ap.replace("ap_",'')) for ap in aps]
+	return str(aps)
+
 @app.route("/logout")
 def logout():
 	if "username" in session:
@@ -44,7 +52,7 @@ def logout():
 	flash("You have been logged out.")
 	return redirect(url_for("login"))
 
-app.secret_key = "?\xc1*\r\xa1\x89\xe6\xa1\xcc\xe7\x9ef\x97\x12\xd3Z)\x93\xd6u\x14y\x0b~Uw\x8a\x89k\xb5\xaejet\xe8\xb3L\xfc\xbez'\xe9\xd9^\xcb\x8fw\x1c\xcb\xab\xe0\xb0,\xc8\x8a\x86w\x8d\xf79\xdc;\x9c}"
+app.secret_key = os.urandom(128)
 
 if __name__ == "__main__":
 	app.debug = True
