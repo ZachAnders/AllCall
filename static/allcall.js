@@ -1,6 +1,32 @@
-function oncall() {
+function onload() {
+	$.tablesorter.addWidget({ 
+		id: "groupLocations", 
+		format: function(table) { 
+			sort_order = $(".headerSortDown,.headerSortUp")
+			sort_by_location = true
+			if (sort_order.length > 0 && sort_order[0].innerHTML != "Location")
+				sort_by_location = false
+
+			var active = false
+			var last_val = ""
+			 
+			for(var i=0; i < table.tBodies[0].rows.length; i++) { 
+				row = table.tBodies[0].rows[i]
+				if (row.cells[5].innerHTML != last_val) {
+					last_val = row.cells[5].innerHTML
+					active = !active
+				}
+				if (sort_by_location && active) {
+					$(row).addClass("active")
+				} else {
+					$(row).removeClass("active")
+				}
+			} 
+		} 
+	}); 
 	$("#allcall_aps").tablesorter({
 		debug: true,
+		widgets: ["groupLocations"],
 		headers: {
 			0:{
 				sorter:false
@@ -33,4 +59,8 @@ function toggle_ap(ap_id) {
 		active_aps.push(ap_id)
 	}
 	console.log(JSON.stringify(active_aps))
+}
+
+function get_customers() {
+
 }
