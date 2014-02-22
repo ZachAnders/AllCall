@@ -5,12 +5,12 @@
 	<script src="static/jquery/tablesorter/jquery.tablesorter.js"></script>
 	<script src="static/allcall.js"></script>
 {% endblock %}
-{% block onload %} oncall() {% endblock %}
+{% block onload %} onload() {% endblock %}
 {% block body %}
 	<div class="panel panel-primary">
 		<div class="panel-heading">
 			<div class="btn-group pull-right">
-				<button type="button" class="btn btn-success btn-md">Initiate AllCall</button>
+				<button type="button" class="btn btn-success btn-md" onclick="get_customers()">Initiate AllCall</button>
 			</div>
 			<h4>
 				Please select Access Points...
@@ -31,7 +31,7 @@
 					</tr>
 				</thead>
 				<tbody>
-				{% for site_id in site_keys %}
+				{% for site_id, is_active in site_order %}
 				<!--<div class="panel panel-default">-->
 					<!--<div class="panel-heading">Location: {{ sites[site_id][0].equipment.equipment_ex.network_location.Name }}</div>-->
 					<!--<div class="panel-body">-->
@@ -60,5 +60,8 @@
 			</div>
 			<div class="clearfix"></div>
 		</div>
+		<form>
+			<input type="hidden" name="selected_aps" value="">
+		</form>
 	</div>
 {% endblock %}

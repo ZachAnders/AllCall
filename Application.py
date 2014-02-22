@@ -32,9 +32,10 @@ def allcall():
 			sites[nl_id] = []
 		sites[nl_id].append(ap)
 
-	site_keys = sites.keys()
-	site_keys.sort(key=lambda x: sites[x][0].equipment.equipment_ex.network_location.Name)
-	return render_template("allcall.html", sites=sites, site_keys=site_keys, logged_in=True)
+	default_order = sites.keys()
+	default_order.sort(key=lambda x: sites[x][0].equipment.equipment_ex.network_location.Name)
+	default_order = [(default_order[i], i%2) for i in range(len(default_order))]
+	return render_template("allcall.html", sites=sites, site_order=default_order, logged_in=True)
 
 @app.route("/logout")
 def logout():
