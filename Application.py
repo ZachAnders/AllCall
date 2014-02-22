@@ -25,7 +25,16 @@ def login():
 def allcall():
 	sess = DbSession()
 	aps = sess.get_session().query(AccessPoint).all()
-	return render_template("allcall.html", access_points=aps, logged_in=True)
+	sites = {}
+	for ap in aps:
+		nl_id = ap.equipment.equipment_ex.network_location.NetworkLocationID
+		if nl_id not in sites:
+			sites[nl_id] = []
+		sites[nl_id].append(ap)
+
+	site_keys = sites.keys()
+	site_keys.sort(key=lambda x: sites[x][0].equipment.equipment_ex.network_location.Name)
+	return render_template("allcall.html", sites=sites, site_keys=site_keys, logged_in=True)
 
 @app.route("/logout")
 def logout():

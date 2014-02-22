@@ -1,34 +1,64 @@
 {% extends "base.html" %}
 {% block title %} All Call {% endblock %}
+{% block includes %}
+	<link href="static/jquery/tablesorter/themes/blue/style.css" rel="stylesheet">
+	<script src="static/jquery/tablesorter/jquery.tablesorter.js"></script>
+	<script src="static/allcall.js"></script>
+{% endblock %}
+{% block onload %} oncall() {% endblock %}
 {% block body %}
-	<div class="panel panel-default">
-		{% if access_points %}
-		
-			<table class="table table-hover">
-				<tr>
-					<td>Selection</td>
-					<!--<td>Access Point ID</td> -->
-					<td>Name</td>
-					<td>MAC Address</td>
-					<td>IP Address</td>
-					<td>Device Type</td>
-					<td>Test</td>
-				</tr>
-				{% for ap in access_points %}
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<div class="btn-group pull-right">
+				<button type="button" class="btn btn-success btn-md">Initiate AllCall</button>
+			</div>
+			<h4>
+				Please select Access Points...
+			</h4>
+			<div class="clearfix"></div>
+		</div>
+		{% if sites %}
+			<table id="allcall_aps" class="tablesorter table">
+				<thead>
 					<tr>
-						<td><button type="button" class="btn btn-danger">Select</button></td>
-						<!--<td>{{ ap.equipment.ID }} </td>-->
-						<td>{{ ap.equipment.Name }}</td>
-						<td>{{ ap.equipment.MACAddress }}</td>
-						<td>{{ ap.equipment.decodedIPAddress() }}</td>
-						<td>{{ ap.equipment.DeviceType }}</td>
-						<td>{{ ap.equipment.equipment_ex.network_location.Name }}</td>
+						<th>Selection</th>
+						<!--<td>Access Point ID</td> -->
+						<th>Name</th>
+						<th>MAC Address</th>
+						<th>IP Address</th>
+						<th>Device Type</th>
+						<th>Location</th>
 					</tr>
+				</thead>
+				<tbody>
+				{% for site_id in site_keys %}
+				<!--<div class="panel panel-default">-->
+					<!--<div class="panel-heading">Location: {{ sites[site_id][0].equipment.equipment_ex.network_location.Name }}</div>-->
+					<!--<div class="panel-body">-->
+					{% for ap in sites[site_id] %}
+						<tr>
+							<td><button id="ap_{{ ap.equipment.ID }}" onclick="toggle_ap(this.id)" type="button" class="btn btn-danger" style="width:5em" >Select</button></td>
+							<!--<td>{{ ap.equipment.ID }} </td>-->
+							<td>{{ ap.equipment.Name }}</td>
+							<td>{{ ap.equipment.MACAddress }}</td>
+							<td>{{ ap.equipment.decodedIPAddress() }}</td>
+							<td>{{ ap.equipment.DeviceType }}</td>
+							<td>{{ ap.equipment.equipment_ex.network_location.Name }}</td>
+						</tr>
+					{% endfor %}
+					<!--</div>-->
+					<!--</div>-->
 				{% endfor %}
-
+				</tbody>
 			</table>
 		{% else %}
 			Did not find any access points!
 		{% endif %}
+		<div class="panel-heading">
+			<div class="btn-group pull-right">
+				<button type="button" class="btn btn-success btn-md">Initiate AllCall</button>
+			</div>
+			<div class="clearfix"></div>
+		</div>
 	</div>
 {% endblock %}
