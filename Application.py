@@ -36,7 +36,7 @@ def allcall():
 	default_order = sites.keys()
 	default_order.sort(key=lambda x: sites[x][0].equipment.equipment_ex.network_location.Name)
 	default_order = [(default_order[i], i%2) for i in range(len(default_order))]
-	return render_template("allcall.html", sites=sites, site_order=default_order, logged_in=True)
+	return render_template("allcall.html", sites=sites, site_order=default_order, logged_in=True, debug=app.debug)
 
 @app.route("/select_aps", methods=['POST'])
 @requires_session

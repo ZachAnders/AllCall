@@ -59,8 +59,9 @@ function toggle_ap(ap_id) {
 		active_aps.push(ap_id)
 	}
 	console.log(JSON.stringify(active_aps))
+	$("#selected_aps").val(JSON.stringify(active_aps))
 }
 
 function get_customers() {
-
+	$("#ap_form").submit();
 }
