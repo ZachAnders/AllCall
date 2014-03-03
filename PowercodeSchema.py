@@ -9,6 +9,7 @@ class AccessPoint(Base):
 	EquipmentID = Column(Integer, ForeignKey("Equipment.ID"), primary_key=True)
 	equipment = relationship("Equipment", foreign_keys='AccessPoint.EquipmentID')
 
+
 class Equipment(Base):
 	__tablename__ = "Equipment"
 
@@ -18,9 +19,14 @@ class Equipment(Base):
 	IPAddress = Column(Integer)
 	DeviceType = Column(String)
 	equipment_ex = relationship("EquipmentEx", uselist=False, backref="Equipment")
+	customers = relationship("EquipmentParent", foreign_keys="EquipmentParent.EquipmentID")
 
 	def decodedIPAddress(self):
 		return ".".join([str((self.IPAddress >> ((3-i)*8))&0xFF) for i in range(4)])
+
+	def __repr__(self):
+		return "{ID: %s Name: %s MAC: %s IP: %s DevType: %s}" % (repr(self.ID), repr(self.Name),\
+				repr(self.MACAddress), repr(self.IPAddress), repr(self.DeviceType))
 
 class EquipmentEx(Base):
 	__tablename__ = "EquipmentEx"
@@ -28,6 +34,15 @@ class EquipmentEx(Base):
 	EquipmentID = Column(Integer, ForeignKey('Equipment.ID'), primary_key=True)
 	NetworkLocationID = Column(Integer, ForeignKey('NetworkLocation.NetworkLocationID'))
 	network_location = relationship("NetworkLocation", foreign_keys='EquipmentEx.NetworkLocationID')
+
+class EquipmentParent(Base):
+	__tablename__ = "EquipmentParent"
+	
+	EquipmentID = Column(Integer, ForeignKey('Equipment.ID'), primary_key=True)
+	ParentID = Column(Integer, ForeignKey('Equipment.ID'))
+
+	parent = relationship("Equipment", foreign_keys='EquipmentParent.ParentID')
+	child = relationship("Equipment", foreign_keys='EquipmentParent.EquipmentID')
 
 class NetworkLocation(Base):
 	__tablename__ = "NetworkLocation"
