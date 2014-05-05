@@ -71,8 +71,9 @@ def exec_allcall():
 			yield str(number)
 
 	outs = "Message: %s, To call: <br>" % message
+	print(outs + ",".join(cust_iter()))
 
-	return outs + ", ".join(cust_iter())
+	return render_template("completed.html", logged_in=True, debug=app.debug)
 
 #Logout.
 @app.route("/logout")
