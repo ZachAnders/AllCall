@@ -9,6 +9,17 @@
 {% block body %}
 	<div class="panel panel-primary">
 		<div class="panel-heading">
+			<h4>
+				AllCall Message:
+			</h4>
+			<div class="clearfix"></div>
+		</div>
+		<div>
+			<textarea id="v_message" class="form-control" rows="3" placeholder="Voice message..."></textarea>
+		</div>
+	</div>
+	<div class="panel panel-primary">
+		<div class="panel-heading">
 			<div class="btn-group pull-right">
 				<button type="button" class="btn btn-success btn-md" onclick="get_customers()">Initiate AllCall</button>
 			</div>
@@ -62,6 +73,7 @@
 		</div>
 		<form id="ap_form" action="select_aps" method="POST">
 			<input id="selected_aps" type="hidden" name="selected_aps" value="">
+			<input id="selected_message" type="hidden" name="selected_message" value="">
 		</form>
 	</div>
 {% endblock %}

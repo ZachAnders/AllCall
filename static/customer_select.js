@@ -62,6 +62,7 @@ function toggle_customer(cust_id) {
 	} else {
 		active_customers.push(cust_id)
 	}
+	$("#num_customers").text(active_customers.length)
 	console.log(JSON.stringify(active_customers))
 }
 

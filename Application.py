@@ -3,7 +3,7 @@ import json, os
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 from AppAuth import has_valid_credentials, requires_session
 from DbSession import DbSession
-from PowercodeSchema import AccessPoint, Equipment
+from PowercodeSchema import AccessPoint, Equipment, Customer
 app = Flask(__name__)
 
 #Root, redirect to login
@@ -48,30 +48,31 @@ def allcall():
 @requires_session
 def select_aps():
 	aps = json.loads(request.form['selected_aps'])
+	message = request.form['selected_message']
 	aps = [int(ap.replace("ap_", '')) for ap in aps]
 	sess = DbSession().get_session()
 	ap_equips = sess.query(Equipment).filter(Equipment.ID.in_(aps)).all()
-	return render_template("customer_select.html", aps=ap_equips, logged_in=True, debug=app.debug)
-#	def equip_iter():
-#		for each_ap in ap_equips:
-#			yield " <h4>AP: " + str(each_ap) + "</h4>"
-#			for equip_child in each_ap.get_children():
-#				yield "CHILD: -->" + str(equip_child) + str(equip_child.end_user)
-#				yield "----------> Primary Number -->" + str(equip_child.end_user.get_first_number())
-#				for phone_num in equip_child.end_user.phone_numbers:
-#					yield "----------> Number -->" + str(phone_num)
-#				yield "<br>"
-#	return "<br>".join(equip_iter())
-
-	#return "<br>".join([str(child.end_user) for child in children])
-	#return "<br>".join([str(equip.get_children()) for equip in equips])
-	#return str(equips)
-	#return str([test.customers for test in equips])
+	num_customers = sum([len(ap.get_children()) for ap in ap_equips])
+	return render_template("customer_select.html", num_customers=num_customers, aps=ap_equips, message=message, logged_in=True, debug=app.debug)
 
 @app.route("/exec_allcall", methods=['POST'])
 @requires_session
 def exec_allcall():
-	return "wip"
+	sess = DbSession().get_session()
+	message = request.form['selected_message']
+	customers = json.loads(request.form['selected_custs'])
+	customers = [int(customer.replace("cust_", '')) for customer in customers]
+	customers = sess.query(Customer).filter(Customer.CustomerID.in_(customers)).all()
+	
+	phone_numbers = [customer.get_first_number() for customer in customers if customer.get_first_number()]
+
+	def cust_iter():
+		for number in phone_numbers:
+			yield str(number)
+
+	outs = "Message: %s, To call: <br>" % message
+
+	return outs + ", ".join(cust_iter())
 
 #Logout.
 @app.route("/logout")

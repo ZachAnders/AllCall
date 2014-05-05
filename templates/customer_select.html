@@ -9,6 +9,29 @@
 {% block body %}
 	<div class="panel panel-primary">
 		<div class="panel-heading">
+			<h4>
+				Details...
+			</h4>
+			<div class="clearfix"></div>
+		</div>
+		<div class="container">
+			<h4>AllCall Message:</h4>
+			<blockquote>
+				{{ message }}
+			</blockquote>
+			<h4>Number of Access Points selected:  {{ aps|length }}</h4>
+			<br>
+			<h4>
+				Number of Customers selected:
+				<span id="num_customers">
+					{{ num_customers }}
+				</span>
+			</h4>
+			<br>
+		</div>
+	</div>
+	<div class="panel panel-primary">
+		<div class="panel-heading">
 			<div class="btn-group pull-right">
 				<button type="button" class="btn btn-success btn-md" onclick="launch_allcall()">Begin AllCall</button>
 			</div>
@@ -58,6 +81,7 @@
 		</div>
 		<form id="customer_form" action="exec_allcall" method="POST">
 			<input id="selected_custs" type="hidden" name="selected_custs" value="">
+			<input id="selected_message" type="hidden" name="selected_message" value="{{ message }}">
 		</form>
 	</div>
 {% endblock %}
