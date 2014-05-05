@@ -3,7 +3,7 @@ import json, os
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 from AppAuth import has_valid_credentials, requires_session
 from DbSession import DbSession
-from PowercodeSchema import AccessPoint
+from PowercodeSchema import AccessPoint, Equipment
 app = Flask(__name__)
 
 #Root, redirect to login
@@ -29,8 +29,8 @@ def login():
 @app.route("/allcall")
 @requires_session
 def allcall():
-	sess = DbSession()
-	aps = sess.get_session().query(AccessPoint).all()
+	sess = DbSession().get_session()
+	aps = sess.query(AccessPoint).all()
 	sites = {}
 	for ap in aps:
 		nl_id = ap.equipment.equipment_ex.network_location.NetworkLocationID
@@ -43,13 +43,35 @@ def allcall():
 	default_order = [(default_order[i], i%2) for i in range(len(default_order))]
 	return render_template("allcall.html", sites=sites, site_order=default_order, logged_in=True, debug=app.debug)
 
-#Select APs, determins appropriate customer list
+#Select APs, determines appropriate customer list
 @app.route("/select_aps", methods=['POST'])
 @requires_session
 def select_aps():
 	aps = json.loads(request.form['selected_aps'])
 	aps = [int(ap.replace("ap_", '')) for ap in aps]
-	return str(aps)
+	sess = DbSession().get_session()
+	ap_equips = sess.query(Equipment).filter(Equipment.ID.in_(aps)).all()
+	return render_template("customer_select.html", aps=ap_equips, logged_in=True, debug=app.debug)
+#	def equip_iter():
+#		for each_ap in ap_equips:
+#			yield " <h4>AP: " + str(each_ap) + "</h4>"
+#			for equip_child in each_ap.get_children():
+#				yield "CHILD: -->" + str(equip_child) + str(equip_child.end_user)
+#				yield "----------> Primary Number -->" + str(equip_child.end_user.get_first_number())
+#				for phone_num in equip_child.end_user.phone_numbers:
+#					yield "----------> Number -->" + str(phone_num)
+#				yield "<br>"
+#	return "<br>".join(equip_iter())
+
+	#return "<br>".join([str(child.end_user) for child in children])
+	#return "<br>".join([str(equip.get_children()) for equip in equips])
+	#return str(equips)
+	#return str([test.customers for test in equips])
+
+@app.route("/exec_allcall", methods=['POST'])
+@requires_session
+def exec_allcall():
+	return "wip"
 
 #Logout.
 @app.route("/logout")

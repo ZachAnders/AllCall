@@ -46,11 +46,11 @@ function toggle_ap(ap_id) {
 	if (ap_button.hasClass("btn-danger")) {
 		ap_button.removeClass("btn-danger")
 		ap_button.addClass("btn-info")
-		ap_button.text("Remove")
+		ap_button.text("Select")
 	} else {
 		ap_button.removeClass("btn-info")
 		ap_button.addClass("btn-danger")
-		ap_button.text("Select")
+		ap_button.text("Remove")
 	}
 	ap_ind = active_aps.indexOf(ap_id)
 	if (ap_ind != -1) {

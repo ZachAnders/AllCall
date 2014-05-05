@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %} All Call {% endblock %}
+{% block includes %}
+	<link href="static/jquery/tablesorter/themes/blue/style.css" rel="stylesheet">
+	<script src="static/jquery/tablesorter/jquery.tablesorter.js"></script>
+	<script src="static/customer_select.js"></script>
+{% endblock %}
+{% block onload %} onload() {% endblock %}
+{% block body %}
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<div class="btn-group pull-right">
+				<button type="button" class="btn btn-success btn-md" onclick="launch_allcall()">Begin AllCall</button>
+			</div>
+			<h4>
+				Please Confirm Customers...
+			</h4>
+			<div class="clearfix"></div>
+		</div>
+		{% if aps %}
+			<table id="customer_equips" class="tablesorter table">
+				<thead>
+					<tr>
+						<th>Selection</th>
+						<th>Access Point Name</th>
+						<th>Company/Full Name</th>
+						<th>Phone Number</th>
+						<th>Number Type</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for ap_equip in aps %}
+					{% for customer_equip in ap_equip.get_children() %}
+					<tr>
+							<td><button id="cust_{{ customer_equip.end_user.CustomerID }}" onclick="toggle_customer(this.id)" type="button" class="btn btn-danger" style="width:5em" >Remove</button></td>
+							<td>{{ ap_equip.Name }}</td>
+							<td>{{ customer_equip.end_user.CompanyName }}</td>
+							{% if customer_equip.end_user.get_first_number() %}
+								<td>{{ customer_equip.end_user.get_first_number().Number }}</td>
+								<td>{{ customer_equip.end_user.get_first_number().Type }}</td>
+							{% else %}
+								<td class="warning"> N/A </td>
+								<td class="warning"> N/A </td>
+							{% endif %}
+						</tr>
+					{% endfor %}
+				{% endfor %}
+				</tbody>
+			</table>
+		{% else %}
+			Did not find any Customers!
+		{% endif %}
+		<div class="panel-heading">
+			<div class="btn-group pull-right">
+				<button type="button" class="btn btn-success btn-md" onclick="launch_allcall()">Begin AllCall</button>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		<form id="customer_form" action="exec_allcall" method="POST">
+			<input id="selected_custs" type="hidden" name="selected_custs" value="">
+		</form>
+	</div>
+{% endblock %}
