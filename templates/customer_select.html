@@ -33,7 +33,7 @@
 	<div class="panel panel-primary">
 		<div class="panel-heading">
 			<div class="btn-group pull-right">
-				<button type="button" class="btn btn-success btn-md" onclick="launch_allcall()">Begin AllCall</button>
+				<button type="button" class="btn btn-success btn-md" data-toggle="modal" data-target="#confirm_box"> Submit Request</button>
 			</div>
 			<h4>
 				Final Customer Review...
@@ -75,7 +75,7 @@
 		{% endif %}
 		<div class="panel-heading">
 			<div class="btn-group pull-right">
-				<button type="button" class="btn btn-success btn-md" onclick="launch_allcall()">Begin AllCall</button>
+				<button type="button" class="btn btn-success btn-md" data-toggle="modal" data-target="#confirm_box"> Submit Request</button>
 			</div>
 			<div class="clearfix"></div>
 		</div>
@@ -83,5 +83,23 @@
 			<input id="selected_custs" type="hidden" name="selected_custs" value="">
 			<input id="selected_message" type="hidden" name="selected_message" value="{{ message }}">
 		</form>
+	</div>
+
+	<div class="modal fade" id="confirm_box" aria-hidden="true">
+		<div class="modal-dialog modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" >Please Confirm</h4>
+			</div>
+			<div class="modal-body">
+				Once you submit an AllCall request, you cannot cancel or change it!
+				<br>
+				Are you sure you want to continue?
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" onclick="launch_allcall()">Submit</button>
+			</div>
+		</div>
 	</div>
 {% endblock %}
